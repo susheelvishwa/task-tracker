@@ -8,9 +8,11 @@ import taskRoutes from "./routes/task.routes.js";
 dotenv.config();
 const app = express();
 
+const allowedOrigins = process.env.CORS_ORIGINS?.split(",") || ["http://localhost:5173"];
+
 app.use(
   cors({
-    origin: ["http://localhost:5173", "http://localhost:5174"],
+    origin: allowedOrigins,
     methods: ["GET", "POST", "PATCH", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
