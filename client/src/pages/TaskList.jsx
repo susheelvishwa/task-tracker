@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchTasks } from "../redux/taskSlice";
 import { Link } from "react-router-dom";
+import { fetchTasks } from "../redux/taskSlice";
 
 
 export default function TaskList() {
   const dispatch = useDispatch();
   const { tasks, loading } = useSelector((state) => state.tasks);
+  const { user } = useSelector((state) => state.auth);
 
   const [filter, setFilter] = useState("all");
 
@@ -20,7 +21,7 @@ export default function TaskList() {
 
   if (filter === "me") {
     filteredTasks = tasks.filter(
-      (t) => t.assignee?.toLowerCase() === "susheel"
+      (t) => t.assignee?.toLowerCase() === user?.email?.toLowerCase()
     );
   }
 

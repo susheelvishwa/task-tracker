@@ -1,16 +1,30 @@
-import { useState } from "react";
+import axios from "axios";
+import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { addTask } from "../redux/taskSlice";
 import { useNavigate } from "react-router-dom";
+import { addTask } from "../redux/taskSlice";
 
 export default function AddTask() {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [assignee, setAssignee] = useState("");
   const [dueDate, setDueDate] = useState("");
+  const [users, setUsers] = useState([]);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    async function fetchUsers() {
+      try {
+        const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/auth/users`);
+        setUsers(res.data);
+      } catch (err) {
+        console.error("Error fetching users:", err);
+      }
+    }
+    fetchUsers();
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -70,13 +84,18 @@ export default function AddTask() {
           {/* Assignee */}
           <div>
             <label className="block mb-1 font-semibold">Assignee</label>
-            <input
-              type="text"
-              placeholder="Who is responsible?"
-              className="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-blue-400 focus:outline-none"
+            <select
+              className="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-blue-400 focus:outline-none bg-white"
               value={assignee}
               onChange={(e) => setAssignee(e.target.value)}
-            />
+            >
+              <option value="">Select assignee...</option>
+              {users.map((user) => (
+                <option key={user._id} value={user.email}>
+                  {user.name} ({user.email})
+                </option>
+              ))}
+            </select>
           </div>
 
           {/* Due Date */}

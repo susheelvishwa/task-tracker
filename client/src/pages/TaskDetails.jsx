@@ -10,7 +10,7 @@ export default function TaskDetails() {
 
   const fetchTask = async () => {
     try {
-      const res = await axios.get(`http://localhost:5000/api/tasks/${id}`);
+      const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/tasks/${id}`);
       setTask(res.data);
     } catch (error) {
       console.log(error);
@@ -24,7 +24,7 @@ export default function TaskDetails() {
   }, []);
 
   const updateStatus = async () => {
-    await axios.patch(`http://localhost:5000/api/tasks/${id}`, {
+    await axios.patch(`${import.meta.env.VITE_API_URL}/api/tasks/${id}`, {
       status: task.status,
     });
     alert("Status updated!");
@@ -34,7 +34,7 @@ export default function TaskDetails() {
   const deleteTask = async () => {
     if (!confirm("Delete this task?")) return;
 
-    await axios.delete(`http://localhost:5000/api/tasks/${id}`);
+    await axios.delete(`${import.meta.env.VITE_API_URL}/api/tasks/${id}`);
     navigate("/");
   };
 

@@ -14,25 +14,29 @@ export default function EditTask() {
   });
 
   const [loading, setLoading] = useState(true);
+  const [users, setUsers] = useState([]);
 
-  // Fetch existing task
   useEffect(() => {
-    async function fetchTask() {
+    async function fetchData() {
       try {
-        const res = await axios.get(`http://localhost:5000/api/tasks/${id}`);
-        setTask(res.data);
+        const [taskRes, usersRes] = await Promise.all([
+          axios.get(`${import.meta.env.VITE_API_URL}/api/tasks/${id}`),
+          axios.get(`${import.meta.env.VITE_API_URL}/api/auth/users`),
+        ]);
+        setTask(taskRes.data);
+        setUsers(usersRes.data);
       } catch (err) {
         console.log(err);
       } finally {
         setLoading(false);
       }
     }
-    fetchTask();
+    fetchData();
   }, [id]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    await axios.patch(`http://localhost:5000/api/tasks/${id}`, task);
+    await axios.patch(`${import.meta.env.VITE_API_URL}/api/tasks/${id}`, task);
     navigate(`/task/${id}`);
   };
 
@@ -75,14 +79,20 @@ export default function EditTask() {
           {/* Assignee */}
           <div>
             <label className="block mb-2 font-semibold text-gray-700">Assignee</label>
-            <input
-              type="text"
-              className="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+            <select
+              className="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-blue-500 focus:outline-none bg-white"
               value={task.assignee}
               onChange={(e) =>
                 setTask({ ...task, assignee: e.target.value })
               }
-            />
+            >
+              <option value="">Select assignee...</option>
+              {users.map((user) => (
+                <option key={user._id} value={user.email}>
+                  {user.name} ({user.email})
+                </option>
+              ))}
+            </select>
           </div>
 
           {/* Due Date */}

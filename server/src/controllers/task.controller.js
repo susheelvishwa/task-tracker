@@ -1,8 +1,5 @@
 import Task from "../models/task.model.js";
 
-// ------------------------------
-// GET ALL TASKS
-// ------------------------------
 export const getTasks = async (req, res) => {
   try {
     const tasks = await Task.find().sort({ createdAt: -1 });
@@ -12,9 +9,6 @@ export const getTasks = async (req, res) => {
   }
 };
 
-// ------------------------------
-// GET SINGLE TASK BY ID
-// ------------------------------
 export const getTask = async (req, res) => {
   try {
     const task = await Task.findById(req.params.id);
@@ -25,9 +19,6 @@ export const getTask = async (req, res) => {
   }
 };
 
-// ------------------------------
-// CREATE NEW TASK
-// ------------------------------
 export const createTask = async (req, res) => {
   const { title, description, assignee, dueDate, status } = req.body;
 
@@ -47,9 +38,6 @@ export const createTask = async (req, res) => {
   }
 };
 
-// ------------------------------
-// UPDATE TASK
-// ------------------------------
 export const updateTask = async (req, res) => {
   try {
     const updatedTask = await Task.findByIdAndUpdate(
@@ -67,9 +55,6 @@ export const updateTask = async (req, res) => {
   }
 };
 
-// ------------------------------
-// DELETE TASK
-// ------------------------------
 export const deleteTask = async (req, res) => {
   try {
     const task = await Task.findByIdAndDelete(req.params.id);
